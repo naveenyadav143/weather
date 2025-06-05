@@ -1,3 +1,5 @@
+startCommand: gunicorn weather.wsgi:application
+
 services:
   - type: web
     name: weather-django
