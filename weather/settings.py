@@ -12,12 +12,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-import django_heroku
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-ALLOWED_HOSTS = ['.onrender.com']
+# Use ALLOWED_HOSTS from environment or fallback to common deployment and local hosts
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", ".onrender.com,render.com,localhost,127.0.0.1").split(",")
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -26,14 +26,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0pr4ui(yhmk0(7n@sw$in5m(5m+hlk059yrj_pryvg%2c6hmc7'
+SECRET_KEY = os.getenv("SECRET_KEY", 'django-insecure-0pr4ui(yhmk0(7n@sw$in5m(5m+hlk059yrj_pryvg%2c6hmc7')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 
 # Application definition
@@ -126,9 +123,10 @@ USE_TZ = True
 
 # STATIC_URL and STATIC_ROOT already set above
 
+# WhiteNoise settings for static files
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-django_heroku.settings(locals())
