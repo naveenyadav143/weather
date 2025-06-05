@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Weather App</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, #89f7fe, #66a6ff);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+    .container {
+        background-color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        padding: 32px;
+        max-width: 420px;
+        width: 90%;
+        text-align: center;
+    }
+    h1 {
+        color: #333;
+        margin-bottom: 24px;
+    }
+    form {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    input[type="text"] {
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        flex: 1 0 60%;
+        min-width: 180px;
+    }
+    button {
+        background-color: #4e8ee5;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    button:hover {
+        background-color: #3c76d2;
+    }
+    .weather-result {
+        margin-top: 30px;
+    }
+    .weather-icon {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 16px;
+    }
+    .weather-info {
+        font-size: 18px;
+        color: #333;
+        line-height: 1.5;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+    }
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .info-item img {
+        width: 24px;
+        height: 24px;
+    }
+    .error {
+        color: #d32f2f;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+    @media screen and (max-width: 500px) {
+        .container {
+            padding: 20px;
+        }
+        input[type="text"] {
+            min-width: 100%;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>🌤 Weather App</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="city" placeholder="Enter city" required />
+        <button type="submit">Get Weather</button>
+    </form>
+
+    {% if weather_str %}
+    <div class="weather-result">
+        <img class="weather-icon" src="{{ icon }}" alt="Weather icon" />
+        <div class="weather-info">
+            <div class="info-item">
+                <h3>{{city}}</h3>
+                <img src="https://img.icons8.com/fluency/48/temperature.png" alt="Temperature icon" title="Temperature" />
+                <span>Temperature: {{ temp }}°C</span>
+            </div>
+            <div class="info-item">
+                <img src="https://img.icons8.com/color/48/partly-cloudy-day.png" alt="Condition icon" title="Condition" />
+                <span>Condition: {{ condition }}</span>
+            </div>
+            <div class="info-item">
+                <img src="https://img.icons8.com/fluency/48/humidity.png" alt="Humidity icon" title="Humidity" />
+                <span>Humidity: {{ humidity }}%</span>
+            </div>
+            <div class="info-item">
+                <img src="https://img.icons8.com/fluency/48/wind.png" alt="Wind icon" title="Wind speed" />
+                <span>Wind: {{ wind_kph }} kph</span>
+            </div>
+            <div class="info-item">
+                <img src="https://img.icons8.com/fluency/48/rain.png" alt="Rain icon" title="Rain forecast" />
+                <span>Rain: {% if rain %}Yes{% else %}No{% endif %} ({{ rain_mm }} mm, {{ rain_chance }}%)</span>
+            </div>
+        </div>
+    </div>
+    {% elif error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+</div>
+</body>
+</html>
